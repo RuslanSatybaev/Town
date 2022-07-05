@@ -6,7 +6,7 @@ import static city_info.service.CityService.printList;
 
 public class MainCity {
     public static void main(String[] args) throws IOException {
-        ///Press firstCondition or secondCondition
+        //Press firstCondition or secondCondition
         String condition = "secondCondition";
         printList(condition);
     }
