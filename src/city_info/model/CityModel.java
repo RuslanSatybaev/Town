@@ -16,6 +16,10 @@ public class CityModel {
         return name;
     }
 
+    public String getRegion() {
+        return region;
+    }
+
     public String getDistrict() {
         return district;
     }
@@ -32,14 +36,16 @@ public class CityModel {
         this.foundation = foundation;
     }
 
-    public CityModel(int population) {
-        this.population = population;
+    public CityModel(String name, String region) {
+        this.name = name;
+        this.region = region;
     }
 
     @Override
     public String toString() {
         return "CityModel{" +
-                "population=" + population +
+                "name='" + name + '\'' +
+                ", region='" + region + '\'' +
                 '}';
     }
 }

@@ -26,40 +26,28 @@ public class CityService {
         return cityModelList;
     }
 
-    public static Map<Integer, Integer> calculateIndexNumberMax() {
-        Map<Integer, Integer> map = new HashMap<>();
-        int indexOfMax = 0;
-        int maxNumber;
-        int[] array = listToArray();
-        for (int i = 1; i < array.length; i++) {
-            if (array[i] > array[indexOfMax]) {
-                indexOfMax = i;
-            }
+    private static Map<String, Integer> regionCityCalculate() {
+        List<CityModel> regionCityList = readFile();
+        Map<String, Integer> counter = new HashMap<>();
+        for (CityModel cityModel : regionCityList) {
+            String region = cityModel.getRegion();
+            int newValue = counter.getOrDefault(region, 0) + 1;
+            counter.put(region, newValue);
         }
-        Arrays.sort(array);
-        maxNumber = Arrays.stream(array).max().getAsInt();
-        map.put(indexOfMax, maxNumber);
-        return map;
-    }
-
-    public static int[] listToArray() {
-        int[] array = new int[readFile().size()];
-        for (int i = 0; i < array.length; i++) {
-            int arrays = readFile().get(i).getPopulation();
-            array[i] = arrays;
-        }
-        return array;
+        return counter;
     }
 
     private static CityModel parse(String line) {
         Scanner scanner = new Scanner(line);
-        scanner.skip("\\d+\\s*;\\s.+\\s*;\\s.+\\s*;\\s[А-я\\-]+\\s*;\\s*");
-        int population = Integer.parseInt(scanner.next().trim());
+        scanner.useDelimiter(";");
+        scanner.skip("\\d+\\s*;");
+        String name = scanner.next().trim();
+        String region = scanner.next().trim();
         scanner.close();
-        return new CityModel(population);
+        return new CityModel(name, region);
     }
 
-    public static void printList() {
-        calculateIndexNumberMax().forEach((key, value) -> System.out.println("[" + key + "]=" + value));
+    public static void printCountList() {
+        regionCityCalculate().forEach((key, value) -> System.out.println(key + " - " + value));
     }
 }
