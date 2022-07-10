@@ -1,59 +1,65 @@
 package city_info.service;
 
-import city_info.comparator.DistrictComparator;
-import city_info.comparator.NameComparator;
 import city_info.model.CityModel;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class CityService {
 
-    public static List<CityModel> readFile(String condition) throws IOException {
-        NameComparator nameComparator = new NameComparator();
-        DistrictComparator districtComparator = new DistrictComparator();
+    public static List<CityModel> readFile() {
         File file = new File("src/info_city_list/city_ru.csv");
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-
-        List<CityModel> cityModelList = new ArrayList<>();
-        while (reader.ready()) {
-            cityModelList.add(parse(reader.readLine()));
+        List<CityModel> cityModelList = null;
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            cityModelList = new ArrayList<>();
+            while (reader.ready()) {
+                cityModelList.add(parse(reader.readLine()));
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        if (condition.equals("firstCondition")) {
-            cityModelList.sort(nameComparator);
-        } else if (condition.equals("secondCondition")) {
-            cityModelList.sort(districtComparator);
-            cityModelList.sort(nameComparator);
-        }
-
-        reader.close();
         return cityModelList;
+    }
+
+    public static Map<Integer, Integer> calculateIndexNumberMax() {
+        Map<Integer, Integer> map = new HashMap<>();
+        int indexOfMax = 0;
+        int maxNumber;
+        int[] array = listToArray();
+        for (int i = 1; i < array.length; i++) {
+            if (array[i] > array[indexOfMax]) {
+                indexOfMax = i;
+            }
+        }
+        Arrays.sort(array);
+        maxNumber = Arrays.stream(array).max().getAsInt();
+        map.put(indexOfMax, maxNumber);
+        return map;
+    }
+
+    public static int[] listToArray() {
+        int[] array = new int[readFile().size()];
+        for (int i = 0; i < array.length; i++) {
+            int arrays = readFile().get(i).getPopulation();
+            array[i] = arrays;
+        }
+        return array;
     }
 
     private static CityModel parse(String line) {
         Scanner scanner = new Scanner(line);
-        scanner.useDelimiter(";");
-        scanner.skip("\\d*");
-        String name1 = scanner.next();
-        String name = scanner.next().trim();
-        String region = scanner.next().trim();
-        String district = scanner.next().trim();
-        int population = 14;
-        String foundation = null;
-        if (scanner.hasNext()) {
-            foundation = scanner.next().trim();
-        }
+        scanner.skip("\\d+\\s*;\\s.+\\s*;\\s.+\\s*;\\s[А-я\\-]+\\s*;\\s*");
+        int population = Integer.parseInt(scanner.next().trim());
         scanner.close();
-
-        return new CityModel(name, region, district, population, foundation);
+        return new CityModel(population);
     }
 
-    public static void printList(String condition) throws IOException {
-        readFile(condition).forEach(System.out::println);
+    public static void printList() {
+        calculateIndexNumberMax().forEach((key, value) -> System.out.println("[" + key + "]=" + value));
     }
 }

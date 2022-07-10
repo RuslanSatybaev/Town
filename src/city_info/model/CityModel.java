@@ -8,12 +8,20 @@ public class CityModel {
     private int population;
     private String foundation;
 
+    public CityModel() {
+
+    }
+
     public String getName() {
         return name;
     }
 
-    public String getDistrict()  {
+    public String getDistrict() {
         return district;
+    }
+
+    public int getPopulation() {
+        return population;
     }
 
     public CityModel(String name, String region, String district, int population, String foundation) {
@@ -24,14 +32,14 @@ public class CityModel {
         this.foundation = foundation;
     }
 
+    public CityModel(int population) {
+        this.population = population;
+    }
+
     @Override
     public String toString() {
-        return "City{" +
-                "name='" + name + '\'' +
-                "region='" + region + '\'' +
-                "district='" + district + '\'' +
+        return "CityModel{" +
                 "population=" + population +
-                "foundation=" + foundation +
                 '}';
     }
 }
